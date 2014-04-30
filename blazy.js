@@ -44,7 +44,8 @@
 		options.success		= options.success 	|| false;
 	  	options.selector 	= options.selector 	|| '.b-lazy';
 		options.separator 	= options.separator 	|| '|';
-		options.container	= options.container 	?  document.querySelectorAll(options.container) : false;
+		options.container = options.container ?
+			isElement(options.container) ? options.container : document.querySelectorAll(options.container) : false;
 		options.errorClass 	= options.errorClass 	|| 'b-error';
 		options.breakpoints	= options.breakpoints	|| false;
 		options.successClass 	= options.successClass 	|| 'b-loaded';
@@ -91,6 +92,12 @@
 	
 	/* private helper functions
 	************************************/
+    function isElement(o) {
+        return (
+                typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+            o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName === "string"
+            );
+    }
 	function initialize(){
 		// First we create an array of images to lazy load
 		createImageArray(options.selector);
@@ -180,7 +187,7 @@
 	 }
 	 
 	 function createImageArray(selector) {
- 		var nodelist 	= document.querySelectorAll(selector);
+ 		var nodelist 	= options.container.querySelectorAll(selector);
  		count 			= nodelist.length;
  		//converting nodelist to array
  		for(var i = count; i--; images.unshift(nodelist[i])){}
